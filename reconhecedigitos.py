@@ -1,5 +1,8 @@
 import cv2
 
+NUMEROS = 1
+LETRAS = 2
+
 class NaoOcorre:
     def __init__(self):
         self._00 = 1
@@ -92,30 +95,30 @@ class ClassificacaoCaractere:
             flag = not flag    
         return transicao
 
-
     def incializa_classificador_2pixels(self,nome_arq):
         arq = open( nome_arq,'r')
         todos_dados = arq.readlines()
 
         pos = 0
         for linha in todos_dados:
-            self.classes[pos].n_restricoes = (self.n_dim - 1)*4
-            lista = linha.split('|')
-            transicao = lista[1]
-            for j in range(self.n_dim -1):
-                if transicao[j]=='0' and transicao[j+1]=='0' and self.classes[pos].NOC[j]._00 == 1:
-                    self.classes[pos].NOC[j]._00 = 0 #0=ocorre, 1=nao ocorre
-                    self.classes[pos].n_restricoes-=1;
-                if transicao[j]=='0' and transicao[j+1]=='1' and self.classes[pos].NOC[j]._01 == 1:
-                    self.classes[pos].NOC[j]._01 = 0 #0=ocorre, 1=nao ocorre
-                    self.classes[pos].n_restricoes-=1;
-                if transicao[j]=='1' and transicao[j+1]=='0' and self.classes[pos].NOC[j]._10 == 1:
-                    self.classes[pos].NOC[j]._10 = 0 #0=ocorre, 1=nao ocorre
-                    self.classes[pos].n_restricoes-=1;
-                if transicao[j]=='1' and transicao[j+1]=='1' and self.classes[pos].NOC[j]._11 == 1:
-                    self.classes[pos].NOC[j]._11 = 0 #0=ocorre, 1=nao ocorre
-                    self.classes[pos].n_restricoes-=1;                    
-            pos+=1
+            if pos < len(self.classes):
+                self.classes[pos].n_restricoes = (self.n_dim - 1)*4
+                lista = linha.split('|')
+                transicao = lista[1]
+                for j in range(self.n_dim -1):
+                    if transicao[j]=='0' and transicao[j+1]=='0' and self.classes[pos].NOC[j]._00 == 1:
+                        self.classes[pos].NOC[j]._00 = 0 #0=ocorre, 1=nao ocorre
+                        self.classes[pos].n_restricoes-=1;
+                    if transicao[j]=='0' and transicao[j+1]=='1' and self.classes[pos].NOC[j]._01 == 1:
+                        self.classes[pos].NOC[j]._01 = 0 #0=ocorre, 1=nao ocorre
+                        self.classes[pos].n_restricoes-=1;
+                    if transicao[j]=='1' and transicao[j+1]=='0' and self.classes[pos].NOC[j]._10 == 1:
+                        self.classes[pos].NOC[j]._10 = 0 #0=ocorre, 1=nao ocorre
+                        self.classes[pos].n_restricoes-=1;
+                    if transicao[j]=='1' and transicao[j+1]=='1' and self.classes[pos].NOC[j]._11 == 1:
+                        self.classes[pos].NOC[j]._11 = 0 #0=ocorre, 1=nao ocorre
+                        self.classes[pos].n_restricoes-=1;                    
+                pos+=1
         arq.close()
 
     def reconheceCaractereTransicao_2pixels(self, transicao):
@@ -153,16 +156,6 @@ class ClassificacaoCaractere:
             caractere = self.classes[pos].caractere
         return caractere
 
-if __name__ == "__main__":
-    cl = ClassificacaoCaractere(30,40,2,'S')
-    img = cv2.imread("letra_l.png")
-    
-
-    img_cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(img_cinza, 127, 255, type=cv2.THRESH_BINARY)
-
-    transicao = cl.retornaTransicaoHorizontal(thresh)
-    print("Previsto: ",cl.reconheceCaractereTransicao_2pixels(transicao))
 
 
 '''
@@ -193,5 +186,3 @@ if __name__ == "__main__":
         print(cl.reconheceCaractereTransicao_2pixels(transicao))
         cv2.waitKey(0)        
 '''
-
-    
