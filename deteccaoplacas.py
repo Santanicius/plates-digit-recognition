@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import glob
 import math
+import reconhecedigitos as rc
 
 WHITE = 255
 BLACK = 0
@@ -63,8 +64,6 @@ def cut_by_width(img_tresh, equalizedImg):
                 xf_dict[cf] += 1
             else:
                 xf_dict[cf] = 1
-        else:
-            print(diff)
     if n>0:
         xi = max(xi_dict, key= xi_dict.get)
         xf = max(xf_dict, key= xf_dict.get)
@@ -169,16 +168,30 @@ for filename in imagefiles:
         x,y,w,h = cv2.boundingRect(rec)
         if h>17 and h<35 and w>3 and w<50:
             cv2.rectangle(nImg, (x,y), (x+w, y+h), (0,0,255), 1)
-            lista.append([x,y,x+w,y+h])
+            lista.append([x,y,w,h])
 
-    cv2.imshow(filename+"_placa",nImg)
+    if len(lista) == 7:
+        cv2.imshow(filename+"_placa",nImg)
+        print("\n", filename)
+        x,y,w,h = lista[0]
+        ClassLetra = rc.ClassificacaoCaractere(h, w, rc.LETRAS, 'S')
+        ClassNum = rc.ClassificacaoCaractere(h, w, rc.NUMEROS, 'S')
+        lista.reverse()
+        for i in range(len(lista)):
+            xi = lista[i][0]
+            yi = lista[i][1]
+            xf = lista[i][0] + lista[i][2]
+            yf = lista[i][1] + lista[i][3]
+            img_dig = thresh_placa[yi:yf,xi:xf]
+            cv2.imshow(''+str(i),img_dig)
+            if i < 3:
+                transicao = ClassLetra.retornaTransicaoHorizontal(img_dig)
+                print(ClassLetra.reconheceCaractereTransicao_2pixels(transicao), end="")
+            else:
+                transicao = ClassNum.retornaTransicaoHorizontal(img_dig)
+                print(ClassNum.reconheceCaractereTransicao_2pixels(transicao), end="")
+        cv2.waitKey(0)    
+            
     cv2.imwrite( "output\\"+filename.split("\\")[1], thresh_placa)
-    # arr = histogram(equalizedImg)
-    # index, valueMax = arr.index(max(arr)), max(arr)
-cv2.waitKey(0)
-
-# cv2.imshow(filename+"_placa",equalizedImg)    
     
-
-
-
+cv2.waitKey(0)
