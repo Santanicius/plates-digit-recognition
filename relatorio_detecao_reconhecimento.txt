@@ -1,0 +1,71 @@
+Relatório Final da detecção e reconhecimento dos dígitos
+
+Mateus Mendonça Monteiro RA: 10.191.159-9
+Vinicius Santana Ramos RA: 10.191.151-3
+
+Original    -> Previsto | Segmentado | Reconhecido
+ABY9198.jpg -> ALY1199  |     7      |      4
+AAY5127.jpg -> ATY5777  |     7      |      4
+CSE9780.jpg -> JYL4     |     4      |      0
+CTB1569.jpg -> TLY47    |     5      |      0
+DUR7778.jpg -> LJF7771  |     7      |      3
+GZA2477.jpg -> LYT3477  |     7      |      3
+GOL0917.jpg -> LLL1421  |     7      |      1
+JLW9464.jpg -> JLW7444  |     7      |      5
+KMG6921.jpg -> LYC4337  |     7      |      0
+KMN0857.jpg -> YYL7777  |     7      |      1
+KMO7265.jpg -> YLY746   |     6      |      2
+KMO7265.jpg -> YLY746   |     7      |      2
+KMO7265.jpg -> YLY746   |     7      |      2
+KND8865.jpg -> FNL4941  |     7      |      1
+KND8865.jpg -> FNL4941  |     7      |      1
+KNP9837.jpg -> LJL7447  |     7      |      1
+KOD7347.jpg -> YJL7147  |     7      |      3
+KQH7731.jpg -> YYY44    |     5      |      0
+KRD7366.jpg -> LLL7444  |     7      |      1
+KUF2376.jpg -> KLL474   |     6      |      1
+LAG5887.jpg -> LLS117   |     6      |      1
+LAK8614.jpg -> LLL414   |     6      |      1
+LAR7207.jpg -> LAF7497  |     7      |      4
+LAV5233.jpg -> YVS473   |     6      |      1
+LAY2596.jpg -> LTY774   |     6      |      2
+LB01230.jpg -> JYT444   |     6      |      0
+LBD2319.jpg -> LLL7417  |     7      |      2
+LBL9606.jpg -> LPL3644  |     7      |      3
+LBL9709.jpg -> LLY799   |     6      |      1
+LBU5699.jpg -> LPU4477  |     7      |      2
+LCD7645.jpg -> CLY443   |     6      |      0
+LCN7724.jpg -> LLJ744   |     6      |      2
+LCS8217.jpg -> LLS4417  |     7      |      4
+LID5816.jpg -> LXJ4444  |     7      |      1
+LIK3988.jpg -> LYL1944  |     7      |      2
+LIN2148.jpg -> LTU4144  |     7      |      3
+LKI6549.jpg -> LYT347   |     6      |      1
+LND3416.jpg -> LJL4474  |     7      |      2
+LNF5873.jpg -> LUY3474  |     7      |      2
+LNG6631.jpg -> LUY441   |     6      |      1
+LNI2993.jpg -> LIY71    |     5      |      1
+LNJ8753.jpg -> LUJ4751  |     7      |      4
+LNO3968.jpg -> LLJ7744  |     7      |      1
+LNP1417.jpg -> LLL1477  |     7      |      4
+LNP7221.jpg -> LLL7747  |     7      |      2
+LNR0491.jpg -> YFL471   |     6      |      0
+LNR3839.jpg -> LNF3742  |     7      |      3
+LNU2885.jpg -> LJJ7415  |     7      |      2
+LNZ1724.jpg -> LJY4     |     4      |      1
+LNZ1724.jpg -> LJY4     |     7      |      1
+LNZ4292.jpg -> LLT4373  |     7      |      2
+LNZ7675.jpg -> LUT7475  |     7      |      4
+LOA1784.jpg -> LLA7144  |     7      |      3
+LOA2563.jpg -> YLT4444  |     7      |      0
+LOA7993.jpg -> LUA7323  |     7      |      4
+LOE0836.jpg -> LQL0474  |     7      |      2
+LOE2022.jpg -> LLL4043  |     7      |      2
+LOF2025.jpg -> LUL3135  |     7      |      2
+LOF3405.jpg -> LLL4414  |     7      |      2
+LOH8516.jpg -> LQL9544  |     7      |      2
+
+Total Segmentados:  399 
+Total Reconhecidos:  112
+
+Placas reconhecidas =>  60

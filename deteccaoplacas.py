@@ -44,7 +44,7 @@ def find_plate_width(img_tresh):
 
     return result
                 
-def cut_by_width(img_tresh, equalizedImg):
+def cut_by_width(img_tresh, equalizedImg, imgorig):
     r = find_plate_width(img_tresh)
     rows, cols = img_tresh.shape
     xi_dict = dict()
@@ -68,17 +68,29 @@ def cut_by_width(img_tresh, equalizedImg):
         xi = max(xi_dict, key= xi_dict.get)
         xf = max(xf_dict, key= xf_dict.get)
         newImg = equalizedImg[:rows,xi:xf]
-                
-        return newImg
+        Orig = imgorig.copy()
+        Orig = Orig[:rows,xi:xf]
+        return newImg, Orig
     else:
-        return equalizedImg
+        return equalizedImg, equalizedImg
 
+def count_digits_rec(origdig, recognized):
+    count_digits = 0
+    for i in range(len(recognized)):
+        if(origdig[i] == recognized[i]):
+            count_digits = count_digits + 1
+    
+    return count_digits
 
-imagefiles = glob.glob("cars_plates/*")
+contPlacas = 0
+contDigitsRec = 0
+contDigitsSeg = 0
+print("Original    -> Previsto | Segmentado | Reconhecido")
+
+imagefiles = glob.glob("Placas_de_carros_com_digitos da placa/*")
 for filename in imagefiles:
     img = cv2.imread(filename)
     img_copia = img.copy()
-
     img_cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     img_cinza = cv2.GaussianBlur(img_cinza, (3,3), 0.2)
@@ -86,7 +98,7 @@ for filename in imagefiles:
     img_laplacian = cv2.filter2D(img_cinza, -1, kernel) 
 
     img_gauss = cv2.GaussianBlur(img_laplacian, (3,3), 0)
-
+    
     ret, thresh = cv2.threshold(img_gauss, 90, 255, type=cv2.THRESH_OTSU)
 
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
@@ -151,47 +163,51 @@ for filename in imagefiles:
 
     rows, cols, _ = img_placa.shape
     img_placa_cinza = cv2.cvtColor(img_placa, cv2.COLOR_BGR2GRAY)
-
+    
     equalizedImg = group(img_placa_cinza,128)
     
     ret_placa, thresh_placa = cv2.threshold(equalizedImg, 0, 255, type=cv2.THRESH_OTSU) 
-    nImg = cut_by_width(thresh_placa, equalizedImg)
+    nImg, nImgOrig = cut_by_width(thresh_placa, equalizedImg, img_placa_cinza)
+    ret_placa, thresh_placa = cv2.threshold(nImg, 90, 255, type=cv2.THRESH_OTSU) 
 
-
-    
-    ret_placa, thresh_placa = cv2.threshold(nImg, 0, 255, type=cv2.THRESH_OTSU) 
-    
     contours, hierarchy = cv2.findContours(thresh_placa, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(nImg, contours, -1, (255, 0, 0), 1)
+    cv2.drawContours(thresh_placa, contours, -1, (255, 255, 0), 2)
+    
     lista = []
     for rec in contours:
         x,y,w,h = cv2.boundingRect(rec)
         if h>17 and h<35 and w>3 and w<50:
-            cv2.rectangle(nImg, (x,y), (x+w, y+h), (0,0,255), 1)
+            cv2.rectangle(nImg, (x,y), (x+w, y+h), (0,255,255), 1)
             lista.append([x,y,w,h])
 
-    if len(lista) == 7:
-        cv2.imshow(filename+"_placa",nImg)
-        print("\n", filename)
-        x,y,w,h = lista[0]
-        ClassLetra = rc.ClassificacaoCaractere(h, w, rc.LETRAS, 'S')
-        ClassNum = rc.ClassificacaoCaractere(h, w, rc.NUMEROS, 'S')
+    contPlacas = contPlacas+1
+    if len(lista) <= 7:
+        
         lista.reverse()
+        plate_digits = filename.split("\\")[1].split(".")[0]
+        recognized = ""
         for i in range(len(lista)):
-            xi = lista[i][0]
-            yi = lista[i][1]
-            xf = lista[i][0] + lista[i][2]
-            yf = lista[i][1] + lista[i][3]
-            img_dig = thresh_placa[yi:yf,xi:xf]
-            cv2.imshow(''+str(i),img_dig)
-            if i < 3:
-                transicao = ClassLetra.retornaTransicaoHorizontal(img_dig)
-                print(ClassLetra.reconheceCaractereTransicao_2pixels(transicao), end="")
-            else:
-                transicao = ClassNum.retornaTransicaoHorizontal(img_dig)
-                print(ClassNum.reconheceCaractereTransicao_2pixels(transicao), end="")
-        cv2.waitKey(0)    
+            xi,yi,w,h = lista[i]
             
-    cv2.imwrite( "output\\"+filename.split("\\")[1], thresh_placa)
+            xf = xi + w
+            yf = yi + h
+            img_dig = thresh_placa[yi:yf,xi:xf]
+
+            kernelDilate = np.ones((1,1), np.uint8) 
+            img_dig = cv2.dilate(img_dig, kernelDilate, iterations=1)
+
+            if i < 3:
+                ClassLetra = rc.ClassificacaoCaractere(30, 40, 2, 'N')
+                transicao = ClassLetra.retornaTransicaoHorizontal(img_dig)
+                recognized += ClassLetra.reconheceCaractereTransicao_2pixels(transicao)
+            else:
+                ClassNum = rc.ClassificacaoCaractere(30, 40, 1, 'N')
+                transicao = ClassNum.retornaTransicaoHorizontal(img_dig)
+                recognized += ClassNum.reconheceCaractereTransicao_2pixels(transicao)   
+    contDigitsSeg += len(lista)
+    contDigitsRec += count_digits_rec(plate_digits, recognized)
+    print(str(plate_digits+".jpg"), "->", recognized, "|",len(lista), "|",count_digits_rec(plate_digits, recognized))
     
+print("\n\nTotal Segmentados: ", contDigitsSeg, "\nTotal Reconhecidos: ", contDigitsRec)
+print("\n\nPlacas reconhecidas => ", contPlacas)
 cv2.waitKey(0)

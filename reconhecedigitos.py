@@ -1,8 +1,5 @@
 import cv2
 
-NUMEROS = 1
-LETRAS = 2
-
 class NaoOcorre:
     def __init__(self):
         self._00 = 1
@@ -95,6 +92,7 @@ class ClassificacaoCaractere:
             flag = not flag    
         return transicao
 
+
     def incializa_classificador_2pixels(self,nome_arq):
         arq = open( nome_arq,'r')
         todos_dados = arq.readlines()
@@ -156,6 +154,15 @@ class ClassificacaoCaractere:
             caractere = self.classes[pos].caractere
         return caractere
 
+""" if __name__ == "__main__":
+    cl = ClassificacaoCaractere(30,40,2,'N')
+    img = cv2.imread("letra_n.png") 
+
+    img_cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ret, thresh = cv2.threshold(img_cinza, 127, 255, type=cv2.THRESH_BINARY)
+
+    transicao = cl.retornaTransicaoHorizontal(thresh)
+    print(cl.reconheceCaractereTransicao_2pixels(transicao)) """
 
 
 '''
@@ -185,19 +192,6 @@ class ClassificacaoCaractere:
         transicao = cl.retornaTransicaoHorizontal(img_dig)
         print(cl.reconheceCaractereTransicao_2pixels(transicao))
         cv2.waitKey(0)        
-<<<<<<< HEAD
-'''
-=======
 '''
 
-if __name__ == "__main__":
-    cl = ClassificacaoCaractere(30,40,2,'S')
-    img = cv2.imread("letra_l.png")
     
-
-    img_cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(img_cinza, 127, 255, type=cv2.THRESH_BINARY)
-
-    transicao = cl.retornaTransicaoHorizontal(thresh)
-    print("Previsto: ",cl.reconheceCaractereTransicao_2pixels(transicao))
->>>>>>> 80ad7c93c5e3359477a1aa5891a30b4bd7dd2ad1
